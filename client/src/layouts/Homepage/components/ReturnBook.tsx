@@ -1,5 +1,5 @@
 import React from "react";
-import book_1000 from "../../Images/BooksImages/book-luv2code-1000.png";
+import book_1000 from "../../../Images/BooksImages/book-luv2code-1000.png";
 
 export const ReturnBook = () => {
   return (
@@ -7,7 +7,7 @@ export const ReturnBook = () => {
       <div className="text-center">
         <img src={book_1000} width="151" height="233" alt="book" />
         <h6 className="mt-2">Book</h6>
-        <p>Luv2Code</p>
+        <p>Author</p>
         <a className="btn main-color text-white" href="#">
           Reserve
         </a>
