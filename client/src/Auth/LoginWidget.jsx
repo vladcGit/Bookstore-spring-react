@@ -8,11 +8,9 @@ import { OktaSigninWidget } from "./OktaSigninWidget";
 export default function LoginWidget() {
   const { oktaAuth, authState } = useOktaAuth();
   const onSuccess = (tokens) => {
-    console.log(tokens);
     oktaAuth.handleLoginRedirect(tokens);
   };
   const onError = (err) => {
-    console.log("aaaaa");
     console.log("Error: ", err);
   };
   if (!authState) return <SpinnerLoading />;
