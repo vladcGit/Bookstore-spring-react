@@ -5,4 +5,10 @@ export const oktaConfig = {
   scopes: ["openid", "profile", "email"],
   pkce: true,
   disableHttpsCheck: true,
+  idps: [
+    {
+      type: "GOOGLE",
+      id: "0oaa46uc8imYSViH75d7",
+    },
+  ],
 };
