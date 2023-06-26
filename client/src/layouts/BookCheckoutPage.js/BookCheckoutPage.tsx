@@ -9,6 +9,7 @@ import ReviewModel from "../../models/ReviewModel";
 import axios from "axios";
 import { LatestReviews } from "./LatestReviews";
 import { useOktaAuth } from "@okta/okta-react";
+import ReviewRequestModel from "../../models/ReviewRequestModel";
 
 export const BookCheckoutPage = () => {
   const { authState } = useOktaAuth();
@@ -19,6 +20,9 @@ export const BookCheckoutPage = () => {
   const [reviews, setReviews] = useState<ReviewModel[]>([]);
   const [totalStars, setTotalStars] = useState(0);
   const [isLoadingReview, setIsLoadingReview] = useState(true);
+
+  const [isReviewLeft, setisReviewLeft] = useState(false);
+  const [isLoadingUserReview, setIsLoadingUserReview] = useState(true);
 
   const [currentLoansCount, setCurrentLoansCount] = useState(0);
   const [isLoadngCurrentLoansCount, setIsLoadngCurrentLoansCount] =
@@ -102,7 +106,7 @@ export const BookCheckoutPage = () => {
       setIsLoadingReview(false);
       setHttpError(error.message);
     });
-  }, []);
+  }, [isReviewLeft]);
 
   useEffect(() => {
     const fetchUserCurrentLoansCount = async () => {
@@ -153,11 +157,35 @@ export const BookCheckoutPage = () => {
     }
   }, [authState]);
 
+  useEffect(() => {
+    const fetchUserReviewBook = async () => {
+      if (authState?.isAuthenticated) {
+        const url = `/api/reviews/secure/user/book?bookId=${bookId}`;
+        const res = await axios.get(url, {
+          headers: {
+            Authorization: `Bearer ${authState.accessToken?.accessToken}`,
+          },
+        });
+        if (res.status !== 200) {
+          throw new Error("Something went wrong");
+        }
+        setisReviewLeft(res.data);
+      }
+    };
+    try {
+      fetchUserReviewBook();
+    } catch (e: any) {
+      setHttpError(e.message);
+    }
+    setIsLoadingUserReview(false);
+  }, [authState]);
+
   if (
     isLoading ||
     isLoadingReview ||
     isLoadngCurrentLoansCount ||
-    isLoadingBookCheckedOut
+    isLoadingBookCheckedOut ||
+    isLoadingUserReview
   ) {
     return <SpinnerLoading />;
   }
@@ -187,6 +215,29 @@ export const BookCheckoutPage = () => {
     setIsCheckedOut(true);
   }
 
+  async function submitReview(starInput: number, reviewDescription: string) {
+    let bookId: number = 0;
+    if (book?.id) {
+      bookId = book.id;
+    }
+    const reviewRequestModel = new ReviewRequestModel(
+      starInput,
+      bookId,
+      reviewDescription
+    );
+    const url = "/api/reviews/secure";
+    const res = await axios.post(url, reviewRequestModel, {
+      headers: {
+        Authorization: `Bearer ${authState?.accessToken?.accessToken}`,
+      },
+    });
+
+    if (res.status !== 200) {
+      throw new Error("Something went wrong");
+    }
+    setisReviewLeft(true);
+  }
+
   return (
     <div>
       <div className="container d-none d-lg-block">
@@ -214,6 +265,8 @@ export const BookCheckoutPage = () => {
             isAuthenticated={authState?.isAuthenticated}
             isCheckedOut={isCheckedOut}
             checkoutBook={checkoutBook}
+            isReviewLeft={isReviewLeft}
+            submitReview={submitReview}
           />
         </div>
         <hr />
@@ -243,6 +296,8 @@ export const BookCheckoutPage = () => {
           isAuthenticated={authState?.isAuthenticated}
           isCheckedOut={isCheckedOut}
           checkoutBook={checkoutBook}
+          isReviewLeft={isReviewLeft}
+          submitReview={submitReview}
         />
         <hr />
         <LatestReviews reviews={reviews} bookId={book?.id} mobile={true} />
