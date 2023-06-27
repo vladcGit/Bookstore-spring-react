@@ -2,8 +2,10 @@ package com.vlad.springbootlibrary.service;
 
 import com.vlad.springbootlibrary.dao.BookRepository;
 import com.vlad.springbootlibrary.dao.CheckoutRepository;
+import com.vlad.springbootlibrary.dao.HistoryRepository;
 import com.vlad.springbootlibrary.entity.Book;
 import com.vlad.springbootlibrary.entity.Checkout;
+import com.vlad.springbootlibrary.entity.History;
 import com.vlad.springbootlibrary.responsemodels.ShelfCurrentLoansResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +24,9 @@ public class BookService {
 
     @Autowired
     private CheckoutRepository checkoutRepository;
+
+    @Autowired
+    private HistoryRepository historyRepository;
 
     public Book checkoutBook(String userEmail, Long bookId) throws Exception {
         Optional<Book> book = bookRepository.findById(bookId);
@@ -87,18 +92,29 @@ public class BookService {
         book.get().setCopiesAvailable(book.get().getCopiesAvailable() + 1);
         bookRepository.save(book.get());
         checkoutRepository.deleteById(validateCheckout.getId());
+
+        History history = new History(
+                userEmail,
+                validateCheckout.getCheckoutDate(),
+                LocalDate.now().toString(),
+                book.get().getTitle(),
+                book.get().getAuthor(),
+                book.get().getDescription(),
+                book.get().getImg());
+
+        historyRepository.save(history);
     }
 
-    public void renewLoan(String userEmail,Long bookId) throws Exception{
+    public void renewLoan(String userEmail, Long bookId) throws Exception {
         Checkout checkout = checkoutRepository.findByUserEmailAndBookId(userEmail, bookId);
-        if(checkout == null){
+        if (checkout == null) {
             throw new Exception("Book does not exist or not checked out by user");
         }
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
         Date d1 = sdf.parse(checkout.getReturnDate());
         Date d2 = sdf.parse(LocalDate.now().toString());
 
-        if(d1.compareTo(d2) > 0 || d1.compareTo(d2) ==0){
+        if (d1.compareTo(d2) > 0 || d1.compareTo(d2) == 0) {
             checkout.setReturnDate(LocalDate.now().plusDays(7).toString());
             checkoutRepository.save(checkout);
         }
