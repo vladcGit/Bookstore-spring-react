@@ -1,6 +1,7 @@
 package com.vlad.springbootlibrary.config;
 
 import com.vlad.springbootlibrary.entity.Book;
+import com.vlad.springbootlibrary.entity.Message;
 import com.vlad.springbootlibrary.entity.Review;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.rest.core.config.RepositoryRestConfiguration;
@@ -17,11 +18,13 @@ public class MyDataRestConfig implements RepositoryRestConfigurer {
         HttpMethod[] theUnsupportedActions = {HttpMethod.POST, HttpMethod.PATCH, HttpMethod.PUT, HttpMethod.DELETE};
         config.exposeIdsFor(Book.class);
         config.exposeIdsFor(Review.class);
+        config.exposeIdsFor(Message.class);
 
         disableHttpMethods(Book.class, config, theUnsupportedActions);
         disableHttpMethods(Review.class, config, theUnsupportedActions);
+        disableHttpMethods(Message.class, config, theUnsupportedActions);
 
-        cors.addMapping(config.getBasePath()+"/**")
+        cors.addMapping(config.getBasePath() + "/**")
                 .allowedOrigins(theAllowedOrigins);
     }
 

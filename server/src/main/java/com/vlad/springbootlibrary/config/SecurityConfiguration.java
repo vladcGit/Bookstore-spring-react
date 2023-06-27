@@ -16,7 +16,7 @@ public class SecurityConfiguration {
         http
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/books/secure/**", "/api/reviews/secure/**").authenticated()
+                        .requestMatchers("/api/books/secure/**", "/api/reviews/secure/**", "/api/messages/secure/**").authenticated()
                         .anyRequest().permitAll())
                 .oauth2ResourceServer(auth -> auth.jwt(Customizer.withDefaults()))
                 .cors(Customizer.withDefaults())
