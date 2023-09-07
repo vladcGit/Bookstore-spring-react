@@ -2,7 +2,7 @@ package com.vlad.springbootlibrary.service;
 
 import com.vlad.springbootlibrary.dao.MessageRepository;
 import com.vlad.springbootlibrary.entity.Message;
-import com.vlad.springbootlibrary.responsemodels.AdminQuestionRequest;
+import com.vlad.springbootlibrary.requestmodels.AdminQuestionRequest;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

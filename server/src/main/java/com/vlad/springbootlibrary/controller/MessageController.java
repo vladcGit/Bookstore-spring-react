@@ -1,7 +1,7 @@
 package com.vlad.springbootlibrary.controller;
 
 import com.vlad.springbootlibrary.entity.Message;
-import com.vlad.springbootlibrary.responsemodels.AdminQuestionRequest;
+import com.vlad.springbootlibrary.requestmodels.AdminQuestionRequest;
 import com.vlad.springbootlibrary.service.MessageService;
 import com.vlad.springbootlibrary.utils.ExtractJWT;
 import org.springframework.beans.factory.annotation.Autowired;

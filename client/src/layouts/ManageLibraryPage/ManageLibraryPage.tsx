@@ -2,6 +2,7 @@ import { useOktaAuth } from "@okta/okta-react";
 import { useState } from "react";
 import { Navigate } from "react-router-dom";
 import { AdminMessages } from "./components/AdminMessages";
+import { AddNewBook } from "./components/AddNewBook";
 
 export const ManageLibraryPage = () => {
   const { authState } = useOktaAuth();
@@ -82,7 +83,7 @@ export const ManageLibraryPage = () => {
             role="tabpanel"
             aria-labelledby="nav-add-book-tab"
           >
-            Add new book
+            <AddNewBook />
           </div>
           <div
             className="tab-pane fade"

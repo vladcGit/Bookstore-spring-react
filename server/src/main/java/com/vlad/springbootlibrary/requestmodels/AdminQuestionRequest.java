@@ -1,4 +1,4 @@
-package com.vlad.springbootlibrary.responsemodels;
+package com.vlad.springbootlibrary.requestmodels;
 
 import lombok.Data;
 
